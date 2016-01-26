@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+{% for error in signup_errors %}
+<h2>{{ error }}</h2>
+{% endfor %}
+<h1>This replaces the content block in base.html</h1>
+<form action="/signup" method="POST">
+    {{ form.csrf_token }}
+    {{ form.username(size=20,placeholder="enter your username") }}
+    {{ form.email(size=20,placeholder="enter your e-mail") }}
+    {{ form.password(size=20,placeholder="create a password") }}
+    {{ form.repeat_password(size=20,placeholder="repeat password") }}
+    <button type="submit" class="btn btn-info btn-block">Create account</button>
+</form>
+{% endblock %}

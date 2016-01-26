@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+{% for error in signup_errors %}
+<h2>{{ error }}</h2>
+{% endfor %}
+<h1>This replaces the content block in base.html</h1>
+<p>hello</p>
+{% endblock %}
