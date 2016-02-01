@@ -7,3 +7,7 @@ class SignupForm(Form):
     email = StringField("email",validators=[DataRequired()])
     password = PasswordField("password",validators=[DataRequired()])
     repeat_password = PasswordField("repeat password",validators=[DataRequired()])
+
+class SigninForm(Form):
+    username = StringField("username",validators=[DataRequired()])
+    password = PasswordField("password",validators=[DataRequired()])

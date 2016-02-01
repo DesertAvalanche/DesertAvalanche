@@ -1,9 +1,9 @@
 from flask import Flask,render_template,request,redirect
-from flask.ext.login import LoginManager,login_user
+from flask.ext.login import LoginManager,login_user,logout_user,login_required
 from passlib.hash import pbkdf2_sha256
 
 from model import Model
-from forms import SignupForm
+from forms import SignupForm,SigninForm
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///avalanche.db"
@@ -49,6 +49,17 @@ def root():
 def hello():
     return "HELLO WORLD"
 
+@login_required
+@app.route("/secret")
+def secret():
+    return "SECRET"
+
+@login_required
+@app.route("/logout",methods=["GET","POST"])
+def logout():
+    logout_user()
+    return redirect("/")
+
 @app.route("/signup",methods=["GET","POST"])
 def signup():
     form = SignupForm()
@@ -65,11 +76,26 @@ def signup():
                 return redirect("/")
             else :
                 errors.append("Passwords did not match")
-                errors.append(form.password)
-                errors.append(form.repeat_password)
         else:
             errors.append("Some fields were empty")
         return render_template("signup.html",form=form,signup_errors=errors)
+
+@app.route("/login",methods=["GET","POST"])
+def login():
+    print(request.form)
+    form = SigninForm()
+    if request.method == "GET" :
+        return render_template("login.html",form=form,signin_errors=[])
+    elif request.method == "POST" :
+        if form.validate_on_submit():
+            user = app_model.User.query.filter_by(username=request.form["username"]).first()
+            if user != None :
+                if pbkdf2_sha256.verify(request.form["password"],user.password) :
+                    user.authenticated = True
+                    app_db.session.commit()
+                    login_user(user)
+                    return redirect("/")
+        return render_template("login.html",form=form,signin_errors=["incorrect username or password"])
 
 if __name__ == "__main__" :
     app.run()

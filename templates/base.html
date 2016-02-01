@@ -5,6 +5,9 @@
     </head>
     <body>
         <div>
+            {% if current_user.is_authenticated %}
+                <h1>USER: {{ current_user.username }}</h1>
+            {% endif %}
             {% block content %}
             <p>the content should be here</p>
             {% endblock %}
