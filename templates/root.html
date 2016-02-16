@@ -3,6 +3,9 @@
 <a href="/signup">signup here</a>
 <a href="/login">login here</a>
 <a href="/logout">logout here</a>
+{% if not current_user.is_anonymous %}
+<a href="/mygroups">manage groups</a>
+{% endif %}
 <p>{{ users }}</p>
 <ul>
     {% for user in users %}

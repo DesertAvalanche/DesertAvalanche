@@ -11,3 +11,9 @@ class SignupForm(Form):
 class SigninForm(Form):
     username = StringField("username",validators=[DataRequired()])
     password = PasswordField("password",validators=[DataRequired()])
+
+class MakeGroupForm(Form):
+    groupname = StringField("groupname",validators=[DataRequired()])
+
+class AddUserForm(Form):
+    username = StringField("username",validators=[DataRequired()])

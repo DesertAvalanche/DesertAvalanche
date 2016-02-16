@@ -1,9 +1,9 @@
-from flask import Flask,render_template,request,redirect
-from flask.ext.login import LoginManager,login_user,logout_user,login_required
+from flask import Flask,render_template,request,redirect,abort
+from flask.ext.login import LoginManager,login_user,logout_user,login_required,current_user
 from passlib.hash import pbkdf2_sha256
 
 from model import Model
-from forms import SignupForm,SigninForm
+from forms import SignupForm,SigninForm,MakeGroupForm,AddUserForm
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///avalanche.db"
@@ -96,6 +96,44 @@ def login():
                     login_user(user)
                     return redirect("/")
         return render_template("login.html",form=form,signin_errors=["incorrect username or password"])
+
+@login_required
+@app.route("/group/<int:index>",methods=["GET"])
+def group(index):
+    form = AddUserForm()
+    group = app_model.Group.query.filter_by(id=index).first()
+    if group==None or current_user not in group.users :
+        abort(404)
+    return render_template("group.html",group=group,form=form)
+
+@login_required
+@app.route("/mygroups",methods=["GET"])
+def mygroups():
+    form = MakeGroupForm()
+    return render_template("mygroups.html",form = form)
+
+@login_required
+@app.route("/addgroup",methods=["POST"])
+def addgroup():
+    form = MakeGroupForm()
+    if form.validate_on_submit():
+        group = app_model.Group(request.form["groupname"])
+        current_user.groups.append(group)
+        app_db.session.commit()
+        return redirect("/mygroups")
+
+@login_required
+@app.route("/adduser/<int:index>",methods=["POST"])
+def adduser(index):
+    form = AddUserForm()
+    if form.validate_on_submit():
+        group = app_model.Group.query.filter_by(id=index).first()
+        user = app_model.User.query.filter_by(username=request.form["username"]).first()
+        if group is None or user is None or current_user not in group.users :
+            abort(500)
+        user.groups.append(group)
+        app_db.session.commit()
+    return redirect("/group/{}".format(index))
 
 if __name__ == "__main__" :
     app.run()

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{{ group.name }}</h2>
+<ul>
+{% for user in group.users %}
+    <li>{{ user.username }}</li>
+{% endfor %}
+</ul>
+<form action="/adduser/{{group.id}}" method="POST">
+    {{ form.csrf_token }}
+    {{ form.username(size=20,placeholder="enter a username to add") }}
+    <button type="submit">Add</button>
+{% endblock %}

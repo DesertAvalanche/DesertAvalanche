@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<ul>
+{% for grp in current_user.groups %}
+<li><a href="/group/{{grp.id}}">{{ grp.name }}</a></li>
+{% endfor %}
+</ul>
+
+<form action="/addgroup" method="POST">
+    {{ form.csrf_token }}
+    {{ form.groupname(size=20,placeholder="enter the name of your group") }}
+    <button type="submit">Add</button>
+</form>
+
+{% endblock %}
