@@ -2,9 +2,23 @@
 <html>
     <head>
         <title>Desert Avalanche</title>
+        <link href="static/css/bootstrap.css" rel="stylesheet">
+<style>
+body {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+</style>
     </head>
     <body>
-        <div>
+        <div class="container">
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="/">lunchelp</a>
+                    </div>
+                </div>
+            </nav>
             {% if current_user.is_authenticated %}
                 <h1>USER: {{ current_user.username }}</h1>
             {% endif %}
@@ -12,5 +26,6 @@
             <p>the content should be here</p>
             {% endblock %}
         </div>
+        <script src="static/js/bootstrap.js"></script>
     </body>
 </html>

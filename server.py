@@ -1,4 +1,4 @@
-from flask import Flask,render_template,request,redirect,abort
+from flask import Flask,render_template,request,redirect,abort,send_from_directory
 from flask.ext.login import LoginManager,login_user,logout_user,login_required,current_user
 from passlib.hash import pbkdf2_sha256
 
@@ -13,6 +13,8 @@ app.config['PROPAGATE_EXCEPTIONS'] = True
 
 # change this for production
 app.secret_key = "Secret"
+
+app.static_folder = "static"
 
 app_model = Model(app)
 app_db = app_model.db
@@ -137,6 +139,10 @@ def adduser(index):
         app_db.session.add(app_model.Membership(user,group))
         app_db.session.commit()
     return redirect("/group/{}".format(index))
+
+@app.route("/static/<remainder>",methods=["GET"])
+def get_static(remainder):
+    return send_from_directory(app.static_folder,remainder)
 
 if __name__ == "__main__" :
     app.run()
