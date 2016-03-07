@@ -102,7 +102,7 @@ def login():
 def group(index):
     form = AddUserForm()
     group = app_model.Group.query.filter_by(id=index).first()
-    if group==None or current_user not in group.users :
+    if group==None or not group.has_user(current_user) :
         abort(404)
     return render_template("group.html",group=group,form=form)
 
@@ -118,7 +118,10 @@ def addgroup():
     form = MakeGroupForm()
     if form.validate_on_submit():
         group = app_model.Group(request.form["groupname"])
-        current_user.groups.append(group)
+        membership = app_model.Membership(current_user,group)
+        app_db.session.add(membership)
+        app_db.session.add(group)
+        print(membership.user)
         app_db.session.commit()
         return redirect("/mygroups")
 
@@ -129,9 +132,9 @@ def adduser(index):
     if form.validate_on_submit():
         group = app_model.Group.query.filter_by(id=index).first()
         user = app_model.User.query.filter_by(username=request.form["username"]).first()
-        if group is None or user is None or current_user not in group.users :
+        if group is None or user is None or not group.has_user(current_user) :
             abort(500)
-        user.groups.append(group)
+        app_db.session.add(app_model.Membership(user,group))
         app_db.session.commit()
     return redirect("/group/{}".format(index))
 

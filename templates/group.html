@@ -2,8 +2,8 @@
 {% block content %}
 <h2>{{ group.name }}</h2>
 <ul>
-{% for user in group.users %}
-    <li>{{ user.username }}</li>
+{% for m in group.memberships %}
+    <li>{{ m.user.username }}</li>
 {% endfor %}
 </ul>
 <form action="/adduser/{{group.id}}" method="POST">
