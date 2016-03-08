@@ -14,18 +14,33 @@ body {
         <div class="container">
             <nav class="navbar navbar-default">
                 <div class="container-fluid">
+                    <!-- https://getbootstrap.com/examples/dashboard/ -->
                     <div class="navbar-header">
-                        <a class="navbar-brand" href="/">lunchelp</a>
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="/">Lunchelp</a>
                     </div>
+                    <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <!-- <li><a href="#">Dashboard</a></li>
+                        <li><a href="#">Settings</a></li>
+                        <li><a href="#">Profile</a></li>
+                        <li><a href="#">Help</a></li> -->
+                        {% if current_user.is_authenticated %}
+                            <li><a href="#">{{ current_user.username }}</a></li>
+                        {% endif %}
+                    </ul>
                 </div>
             </nav>
-            {% if current_user.is_authenticated %}
-                <h1>USER: {{ current_user.username }}</h1>
-            {% endif %}
             {% block content %}
-            <p>the content should be here</p>
+                <p>Loading...</p>
             {% endblock %}
         </div>
+        <script src="static/js/jquery-1.12.1.min.js"></script>
         <script src="static/js/bootstrap.js"></script>
     </body>
 </html>

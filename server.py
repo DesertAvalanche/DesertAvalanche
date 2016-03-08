@@ -97,7 +97,7 @@ def login():
                     app_db.session.commit()
                     login_user(user)
                     return redirect("/")
-        return render_template("login.html",form=form,signin_errors=["incorrect username or password"])
+        return render_template("login.html",form=form,signin_errors=["Incorrect username or password"])
 
 @login_required
 @app.route("/group/<int:index>",methods=["GET"])
