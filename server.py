@@ -110,6 +110,16 @@ def group(index):
     return render_template("group.html",group=group,form=form,form2=form2)
 
 @login_required
+@app.route("/event/<int:index>",methods=["GET"])
+def event(index):
+    form = MakeEventForm()
+    form2 = AddUserForm()
+    event = app_model.Event.query.filter_by(id=index).first()
+    # if event==None or not e/vent.has_user(current_user) :
+        # abort(404)
+    return render_template("event.html",event=event,form=form,form2=form2)
+
+@login_required
 @app.route("/mygroups",methods=["GET"])
 def mygroups():
     form = MakeGroupForm()

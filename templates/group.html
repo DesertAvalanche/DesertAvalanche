@@ -6,7 +6,7 @@
     <!-- http://getbootstrap.com/components/#list-group -->
     <ul class="list-group">
         {% for e in group.events %}
-            <li class="list-group-item"><a href="#">{{ e.name }}</a></li>
+            <li class="list-group-item"><a href="/event/{{ e.id }}">{{ e.name }}</a></li>
         {% endfor %}
     </ul>
 </div>
