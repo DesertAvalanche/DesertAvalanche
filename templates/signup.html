@@ -1,15 +1,19 @@
+<link href="static/css/login.css" rel="stylesheet"> 
 {% extends "base.html" %}
 {% block content %}
 {% for error in signup_errors %}
 <h2>{{ error }}</h2>
 {% endfor %}
+
+<!-- how to center??? -->
 <h1>This replaces the content block in base.html</h1>
-<form action="/signup" method="POST">
+<form class="form-signin" action="/signup" method="POST">
     {{ form.csrf_token }}
-    {{ form.username(size=20,placeholder="enter your username") }}
-    {{ form.email(size=20,placeholder="enter your e-mail") }}
-    {{ form.password(size=20,placeholder="create a password") }}
-    {{ form.repeat_password(size=20,placeholder="repeat password") }}
+    <h2 class="form-signin-heading">Please sign in</h2>
+    {{ form.username(size=20,placeholder="enter your username", class_="form-control") }}
+    {{ form.email(size=20,placeholder="enter your e-mail", class_="form-control") }}
+    {{ form.password(size=20,placeholder="create a password", class_="form-control") }}
+    {{ form.repeat_password(size=20,placeholder="repeat password", class_="form-control") }}
     <button type="submit">Create account</button>
 </form>
 {% endblock %}
