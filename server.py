@@ -184,6 +184,18 @@ def addvote(event_id, membership_id):
         return redirect("/event/{}".format(event_id))
 
 @login_required
+@app.route("/setadmin",methods=["GET"])
+def setadmin():
+    group = app_model.Group.query.filter_by(id=request.args["group"]).first()
+    user = app_model.User.query.filter_by(id=request.args["user"]).first()
+    admin = current_user.get_membership(group)
+    if user != None and group != None and admin != None and admin.is_admin :
+        membership = user.get_membership(group)
+        membership.is_admin = request.args["is_admin"] == "true"
+        app_db.session.commit()
+    return redirect("/group/{}".format(request.args["group"]))
+
+@login_required
 @app.route("/mygroups",methods=["GET"])
 def mygroups():
     form = MakeGroupForm()
@@ -196,6 +208,7 @@ def addgroup():
     if form.validate_on_submit():
         group = app_model.Group(request.form["groupname"])
         membership = app_model.Membership(current_user,group)
+        membership.is_admin = True
         app_db.session.add(membership)
         app_db.session.add(group)
         print(membership.user)
@@ -221,7 +234,7 @@ def addevent(groupIndex):
     form = MakeEventForm()
     if form.validate_on_submit():
         group = app_model.Group.query.filter_by(id=groupIndex).first()
-        event = app_model.Event(request.form["eventname"])
+        event = app_model.Event(request.form["eventname"],request.form["location"])
         event.group = group;
         # membership = app_model.Membership(current_user,group)
         # app_db.session.add(membership)

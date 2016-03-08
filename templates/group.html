@@ -1,32 +1,49 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Group Name: {{ group.name }}</h1>
+<h1>{{ group.name }}</h1> 
+    {% if current_user.get_membership(group).is_admin %}
+        <span class="label label-primary">administrator</span>
+    {% endif %}
 <h2>Events:</h2>
 <div class="dropdown theme-dropdown clearfix">   
     <!-- http://getbootstrap.com/components/#list-group -->
     <ul class="list-group">
         {% for e in group.events %}
-            <li class="list-group-item"><a href="/event/{{ e.id }}">{{ e.name }}</a></li>
+        <li class="list-group-item"><a href="/event/{{ e.id }}">{{ e.name }} {{ e.time }}</a></li>
         {% endfor %}
     </ul>
 </div>
+{% if current_user.get_membership(group).is_admin %}
 <form action="/addevent/{{group.id}}" method="POST">
     {{ form.csrf_token }}
     {{ form.eventname(size=20,placeholder="Name of new event") }}
+    {{ form.location(size=20,placeholder="Event Location") }}
     <button type="submit">Add</button>
 </form>
+{% endif %}
 <hr />
 <h2>Members:</h2>
 <div class="dropdown theme-dropdown clearfix">   
     <!-- http://getbootstrap.com/components/#list-group -->
     <ul class="list-group">
         {% for m in group.memberships %}
-            <li class="list-group-item"><a href="#">{{ m.user.username }}</a></li>
+            <li class="list-group-item">
+                <a href="#">{{ m.user.username }}</a>
+                {% if m.is_admin %}
+                <span class="label label-primary">admin</span>
+                {% endif %}
+                {% if not m.is_admin and current_user.get_membership(group).is_admin %}
+                <a class="label label-default" href="/setadmin?user={{ m.user.id }}&group={{ group.id }}&is_admin=true">make admin</a>
+                {% endif %}
+            </li>
         {% endfor %}
     </ul>
 </div>
+{% if current_user.get_membership(group).is_admin %}
 <form action="/adduser/{{group.id}}" method="POST">
     {{ form2.csrf_token }}
     {{ form2.username(size=20,placeholder="User to invite") }}
     <button type="submit">Add</button>
+</form>
+{% endif %}
 {% endblock %}
