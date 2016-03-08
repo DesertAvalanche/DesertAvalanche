@@ -5,10 +5,14 @@ from passlib.hash import pbkdf2_sha256
 from model import Model
 from forms import SignupForm,SigninForm,MakeGroupForm,MakeEventForm,AddUserForm,SimpleVoteForm
 
+import sys
+
+production = "production" in sys.argv
+
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///avalanche.db"
 
-app.config['DEBUG'] = True
+app.config['DEBUG'] = not production
 app.config['PROPAGATE_EXCEPTIONS'] = True
 
 # change this for production
@@ -248,4 +252,7 @@ def get_static(remainder):
     return send_from_directory(app.static_folder,remainder)
 
 if __name__ == "__main__" :
-    app.run()
+    if production :
+        app.run(host="0.0.0.0",port=80)
+    else :
+        app.run()

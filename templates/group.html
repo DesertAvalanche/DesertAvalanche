@@ -9,7 +9,7 @@
     <!-- http://getbootstrap.com/components/#list-group -->
     <ul class="list-group">
         {% for e in group.events %}
-        <li class="list-group-item"><a href="/event/{{ e.id }}">{{ e.name }} {{ e.time }}</a></li>
+        <li class="list-group-item"><a href="/event/{{ e.id }}">{{ e.name }} at {{ e.location }}</a></li>
         {% endfor %}
     </ul>
 </div>
