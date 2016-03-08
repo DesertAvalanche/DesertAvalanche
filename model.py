@@ -50,10 +50,16 @@ class Model():
                 return self.username
 
             def has_group(self,group):
-                for membership in self.user :
+                for membership in self.memberships :
                     if membership.group == group :
                         return True
                 return False
+
+            def get_membership(self,group):
+                for membership in self.memberships :
+                    if membership.group == group :
+                        return membership
+                return None
         self.User = User
         
         class Group(db.Model):
@@ -84,8 +90,9 @@ class Model():
             group = db.relationship("Group",back_populates="events")
             votes = db.relationship("Vote",back_populates="event")
 
-            def __init__(self,name):
+            def __init__(self,name,location):
                 self.name = name
+                self.location = location
             
         self.Event = Event
 
