@@ -3,7 +3,7 @@ from flask.ext.login import LoginManager,login_user,logout_user,login_required,c
 from passlib.hash import pbkdf2_sha256
 
 from model import Model
-from forms import SignupForm,SigninForm,MakeGroupForm,MakeEventForm,AddUserForm
+from forms import SignupForm,SigninForm,MakeGroupForm,MakeEventForm,AddUserForm,SimpleVoteForm
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///avalanche.db"
@@ -112,12 +112,76 @@ def group(index):
 @login_required
 @app.route("/event/<int:index>",methods=["GET"])
 def event(index):
-    form = MakeEventForm()
-    form2 = AddUserForm()
+    # http://stackoverflow.com/a/522578/2033574
+    raw_locations = [
+        "Tom and Jerry's",
+        "McDonald's",
+        "China Buffet",
+        "Taco Bell",
+        "Long John Silver's",
+        "AppleBee's",
+        "Chili's",
+        "Valentinos",
+        "Upstream Brewery"
+    ]
+
+    form = SimpleVoteForm()
+    # form2 = AddUserForm()
+
     event = app_model.Event.query.filter_by(id=index).first()
-    # if event==None or not e/vent.has_user(current_user) :
+    
+    # winnerVotes = 0
+    # winner = -1
+    voteCount = [0]*len(raw_locations) # voteCount[loc_id] == num of votes for that location
+    for vote in event.votes:
+        loc_id = int(vote.data)
+        voteCount[loc_id] += 1
+        # if (voteCount[loc_id] > winnerVotes):
+            # winnerVotes = voteCount[loc_id]
+            # winner = loc_id
+
+    # http://www.tutorialspoint.com/python/list_max.htm
+    # http://stackoverflow.com/questions/6193498/pythonic-way-to-find-maximum-value-and-its-index-in-a-list
+    winnerVotes = max(voteCount)
+    winners = [True if votes == winnerVotes else False for votes in voteCount]
+
+    # print "The winner is: ", winner
+    print "The winners are: ", winners
+
+    print voteCount
+    locations = [{
+        "loc_id": loc_id,
+        "name": name,
+        "votes": voteCount[loc_id],
+        "isWinner": winners[loc_id]
+    } for loc_id, name in enumerate(raw_locations)]
+
+    membership = app_model.Membership.query.filter_by(user=current_user,group=event.group).first()
+    # print "MEMBERID: ", membership.id
+    # event = app_model.Group.query.filter_by(id=index).first()
+    # if event==None or not event.has_user(current_user) :
         # abort(404)
-    return render_template("event.html",event=event,form=form,form2=form2)
+    return render_template("event.html",event=event,form=form,membership=membership,
+                           locations=locations) # chicken dinner!
+
+@login_required
+@app.route("/addvote/<int:event_id>/<int:membership_id>",methods=["POST"])
+def addvote(event_id, membership_id):
+    form = SimpleVoteForm()
+    if form.validate_on_submit():
+        # group = app_model.Group.query.filter_by(id=groupIndex).first()
+        vote = app_model.Vote(request.form["locationid"])
+        event = app_model.Event.query.filter_by(id=event_id).first()
+        membership = app_model.Membership.query.filter_by(id=membership_id).first()
+
+        vote.event = event;
+        vote.membership = membership;
+        # membership = app_model.Membership(current_user,group)
+        # app_db.session.add(membership)
+        app_db.session.add(event)
+        # print(membership.user)
+        app_db.session.commit()
+        return redirect("/event/{}".format(event_id))
 
 @login_required
 @app.route("/mygroups",methods=["GET"])

@@ -98,4 +98,8 @@ class Model():
 
             event = db.relationship("Event",back_populates="votes")
             membership = db.relationship("Membership",back_populates="votes")
+
+            def __init__(self,data):
+                self.data = data
+            
         self.Vote = Vote

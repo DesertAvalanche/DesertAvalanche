@@ -20,3 +20,6 @@ class MakeEventForm(Form):
 
 class AddUserForm(Form):
     username = StringField("username",validators=[DataRequired()])
+
+class SimpleVoteForm(Form):
+    locationid = StringField("locationid",validators=[DataRequired()])
