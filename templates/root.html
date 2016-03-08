@@ -1,8 +1,20 @@
+<!--https://getbootstrap.com/examples/theme/#-->
+<link href="static/css/theme.css" rel="stylesheet">
+
 {% extends "base.html" %}
 {% block content %}
-<a href="/signup">signup here</a>
-<a href="/login">login here</a>
-<a href="/logout">logout here</a>
+      <div class="page-header">
+        <h1>Starting actions...</h1>
+       
+ <div class="dropdown theme-dropdown clearfix">   
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+      <li class="active"><a href="/login">login here</a></li>
+      <li><a href="/signup">signup here</a></li>
+      <li role="separator" class="divider"></li>
+      <li><a href="/logout">logout here</a></li>
+    </ul>
+ </div>
+
 {% if not current_user.is_anonymous %}
 <a href="/mygroups">manage groups</a>
 {% endif %}
