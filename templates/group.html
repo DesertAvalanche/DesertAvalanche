@@ -1,13 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>{{ group.name }}</h2>
-<ul>
-{% for m in group.memberships %}
-    <li>{{ m.user.username }}</li>
-{% endfor %}
-</ul>
+<h1>Group Name: {{ group.name }}</h1>
+<h2>Members:</h2>
+<div class="dropdown theme-dropdown clearfix">   
+    <!-- http://getbootstrap.com/components/#list-group -->
+    <ul class="list-group">
+        {% for m in group.memberships %}
+            <li class="list-group-item"><a href="#">{{ m.user.username }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
 <form action="/adduser/{{group.id}}" method="POST">
     {{ form.csrf_token }}
-    {{ form.username(size=20,placeholder="enter a username to add") }}
+    {{ form.username(size=20,placeholder="User to invite") }}
     <button type="submit">Add</button>
 {% endblock %}

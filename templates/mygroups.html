@@ -1,28 +1,19 @@
+<!--https://getbootstrap.com/examples/theme/#-->
+
 {% extends "base.html" %}
 {% block content %}
- <div class="dropdown theme-dropdown clearfix">   
+<h1>Your Groups</h1>
+<div class="dropdown theme-dropdown clearfix">   
     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-      {% if current_user.is_anonymous %}
-      <li class="active"><a href="/login">Log in</a></li>
-      <li><a href="/signup">Sign up</a></li>
-      {% else %}
-      <li class="active"><a href="/mygroups">Manage Your Groups</a></li>
-      {% endif %}
-      {% if current_user.is_authenticated %}
-      <li role="separator" class="divider"></li>
-      <li><a href="/logout">Log out</a></li>
-      {% endif %}
+        {% for m in current_user.memberships %}
+        <li><a href="/group/{{m.group.id}}">{{ m.group.name }}</a></li>
+        {% endfor %}
     </ul>
- </div>
-<ul>
-{% for m in current_user.memberships %}
-<li><a href="/group/{{m.group.id}}">{{ m.group.name }}</a></li>
-{% endfor %}
-</ul>
+</div>
 
 <form action="/addgroup" method="POST">
     {{ form.csrf_token }}
-    {{ form.groupname(size=20,placeholder="enter the name of your group") }}
+    {{ form.groupname(size=20,placeholder="Name of new group") }}
     <button type="submit">Add</button>
 </form>
 
