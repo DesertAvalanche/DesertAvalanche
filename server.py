@@ -3,7 +3,7 @@ from flask.ext.login import LoginManager,login_user,logout_user,login_required,c
 from passlib.hash import pbkdf2_sha256
 
 from model import Model
-from forms import SignupForm,SigninForm,MakeGroupForm,AddUserForm
+from forms import SignupForm,SigninForm,MakeGroupForm,MakeEventForm,AddUserForm
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///avalanche.db"
@@ -102,11 +102,12 @@ def login():
 @login_required
 @app.route("/group/<int:index>",methods=["GET"])
 def group(index):
-    form = AddUserForm()
+    form = MakeEventForm()
+    form2 = AddUserForm()
     group = app_model.Group.query.filter_by(id=index).first()
     if group==None or not group.has_user(current_user) :
         abort(404)
-    return render_template("group.html",group=group,form=form)
+    return render_template("group.html",group=group,form=form,form2=form2)
 
 @login_required
 @app.route("/mygroups",methods=["GET"])
@@ -134,11 +135,26 @@ def adduser(index):
     if form.validate_on_submit():
         group = app_model.Group.query.filter_by(id=index).first()
         user = app_model.User.query.filter_by(username=request.form["username"]).first()
-        if group is None or user is None or not group.has_user(current_user) :
+        if group is None or user is None or not group.has_user(current_user) or group.has_user(user):
             abort(500)
         app_db.session.add(app_model.Membership(user,group))
         app_db.session.commit()
     return redirect("/group/{}".format(index))
+
+@login_required
+@app.route("/addevent/<int:groupIndex>",methods=["POST"])
+def addevent(groupIndex):
+    form = MakeEventForm()
+    if form.validate_on_submit():
+        group = app_model.Group.query.filter_by(id=groupIndex).first()
+        event = app_model.Event(request.form["eventname"])
+        event.group = group;
+        # membership = app_model.Membership(current_user,group)
+        # app_db.session.add(membership)
+        app_db.session.add(event)
+        # print(membership.user)
+        app_db.session.commit()
+        return redirect("/group/{}".format(groupIndex))
 
 @app.route("/static/<remainder>",methods=["GET"])
 def get_static(remainder):

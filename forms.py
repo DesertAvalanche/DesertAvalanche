@@ -15,5 +15,8 @@ class SigninForm(Form):
 class MakeGroupForm(Form):
     groupname = StringField("groupname",validators=[DataRequired()])
 
+class MakeEventForm(Form):
+    eventname = StringField("eventname",validators=[DataRequired()])
+
 class AddUserForm(Form):
     username = StringField("username",validators=[DataRequired()])

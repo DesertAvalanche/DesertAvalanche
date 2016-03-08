@@ -83,6 +83,10 @@ class Model():
             group_id = db.Column(db.Integer, db.ForeignKey("groups.id"))
             group = db.relationship("Group",back_populates="events")
             votes = db.relationship("Vote",back_populates="event")
+
+            def __init__(self,name):
+                self.name = name
+            
         self.Event = Event
 
         class Vote(db.Model):
