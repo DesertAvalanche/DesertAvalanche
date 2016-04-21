@@ -114,9 +114,16 @@ def group(index):
     return render_template("group.html",group=group,form=form,form2=form2)
 
 @login_required
+@app.route("/vote/<int:index>/<remainder>",methods=["GET","POST"])
+def vote(index,remainder):
+    event = app_model.Event.query.filter_by(id=index).first()
+    method = event.get_method()
+    return method.handle_page(remainder,request,current_user.get_membership(event.group))
+
+@login_required
 @app.route("/event/<int:index>",methods=["GET"])
 def event(index):
-    # http://stackoverflow.com/a/522578/2033574
+    """    # http://stackoverflow.com/a/522578/2033574
     raw_locations = [
         "Tom and Jerry's",
         "McDonald's",
@@ -130,13 +137,13 @@ def event(index):
     ]
 
     form = SimpleVoteForm()
-    # form2 = AddUserForm()
+    # form2 = AddUserForm()"""
 
     event = app_model.Event.query.filter_by(id=index).first()
     
     # winnerVotes = 0
     # winner = -1
-    voteCount = [0]*len(raw_locations) # voteCount[loc_id] == num of votes for that location
+    """voteCount = [0]*len(raw_locations) # voteCount[loc_id] == num of votes for that location
     for vote in event.votes:
         loc_id = int(vote.data)
         voteCount[loc_id] += 1
@@ -165,8 +172,9 @@ def event(index):
     # event = app_model.Group.query.filter_by(id=index).first()
     # if event==None or not event.has_user(current_user) :
         # abort(404)
-    return render_template("event.html",event=event,form=form,membership=membership,
-                           locations=locations) # chicken dinner!
+        """
+    return render_template("event.html",event=event)#,form=form,membership=membership,
+#                           locations=locations) # chicken dinner!
 
 @login_required
 @app.route("/addvote/<int:event_id>/<int:membership_id>",methods=["POST"])
@@ -240,6 +248,7 @@ def addevent(groupIndex):
         group = app_model.Group.query.filter_by(id=groupIndex).first()
         event = app_model.Event(request.form["eventname"],request.form["location"])
         event.group = group;
+        event.method = "roundrobin"
         # membership = app_model.Membership(current_user,group)
         # app_db.session.add(membership)
         app_db.session.add(event)

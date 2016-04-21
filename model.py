@@ -4,6 +4,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 
 class Model():
     def __init__(self,app) :
+        model = self
         self.db = SQLAlchemy(app)
         db = self.db # place db in additional location for clarity
 
@@ -18,10 +19,12 @@ class Model():
             group = db.relationship("Group",back_populates="memberships")
             votes = db.relationship("Vote",back_populates="membership")
             is_admin = db.Column(db.Boolean)
+            score = db.Column(db.Float)
 
             def __init__(self,user,group):
                 self.user = user
                 self.group = group
+                self.score = 0
         self.Membership = Membership
 
         class User(db.Model):
@@ -89,10 +92,21 @@ class Model():
             group_id = db.Column(db.Integer, db.ForeignKey("groups.id"))
             group = db.relationship("Group",back_populates="events")
             votes = db.relationship("Vote",back_populates="event")
+            method = db.Column(db.String(120))
 
             def __init__(self,name,location):
                 self.name = name
                 self.location = location
+
+            def get_method(self):
+                module = __import__("voting.{}".format(self.method),globals(),locals(),["factory"],0)
+                return module.factory(self,model)
+
+            def apply_method_prefix(self,suffix):
+                return "/vote/{}/{}".format(self.id,suffix)
+
+            def get_url(self):
+                return "/event/{}".format(self.id)
             
         self.Event = Event
 
@@ -106,7 +120,9 @@ class Model():
             event = db.relationship("Event",back_populates="votes")
             membership = db.relationship("Membership",back_populates="votes")
 
-            def __init__(self,data):
+            def __init__(self,membership,event,data):
                 self.data = data
+                self.event= event
+                self.membership = membership
             
         self.Vote = Vote

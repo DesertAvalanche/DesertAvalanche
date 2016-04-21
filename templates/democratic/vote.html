@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<form action="{{event.apply_method_prefix("vote")}}" method="POST">
+    {{ form.csrf_token }}
+    <ul>
+    {% for item in form.choice %}
+    <li>{{item}} --  {{ item.label }}</li>
+    {% endfor %}
+    {{ form.suggestion(placeholder="or type a new choice") }}
+    </ul>
+    <button type="submit">Submit choice</button>
+</form>
+{% endblock %}

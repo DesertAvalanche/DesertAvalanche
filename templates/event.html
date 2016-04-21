@@ -1,32 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>Event Name: {{ event.name }}</h1>
-<h2>Locations:</h2>
-<!-- http://getbootstrap.com/css/ -->
-<table class="table table-bordered">
-    <thead>
-        <!-- http://stackoverflow.com/a/928856/2033574 -->
-        <td style="width: 40px">ID</td>
-        <td>Restaurant</td>
-        <td style="width: 40px">Votes</td>
-    </thead>
-    <tbody>
-        {% for loc in locations %}
-            <tr>
-                <td>{{ loc.loc_id }}</td>
-                {% if loc.isWinner %}
-                    <td><b>{{ loc.name }}</b></td>
-                {% else %}
-                    <td>{{ loc.name }}</td>
-                {% endif %}
-                <td>{{ loc.votes }}</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
-<form action="/addvote/{{event.id}}/{{membership.id}}" method="POST">
-    {{ form.csrf_token }}
-    {{ form.locationid(size=20,placeholder="Enter ID to Vote") }}
-    <button type="submit">Vote</button>
-</form>
+<div class="jumbotron">
+    {{ event.get_method().get_billboard(current_user.get_membership(event.group)) | safe }}
+</div>
 {% endblock %}

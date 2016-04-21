@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Please enter your choice</h1>
+<form action="{{ event.apply_method_prefix("vote") }}" method="POST">
+    {{ form.csrf_token }}
+    {{ form.choice(size=40,placeholder="where do you want to eat") }}
+    <button type="submit">Submit choice</button>
+</form>
+{% endblock %}

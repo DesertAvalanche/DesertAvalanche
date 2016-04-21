@@ -1,0 +1,10 @@
+<h1>Round Robin Results:</h1>
+{% if method.get_choice() != None %}
+<h2>{{method._get_voter().user.username}} has chosen <strong>{{ method.get_choice() }}</strong> </h2>
+{% else %}
+<h2>{{method._get_voter().user.username}} has not chosen yet</h2>
+{% endif %}
+{% if method.can_vote(membership) %}
+    hey! that's you! 
+    <a href="{{event.apply_method_prefix("vote")}}">Vote Now</a>
+{% endif %}
