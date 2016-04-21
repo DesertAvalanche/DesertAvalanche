@@ -246,9 +246,8 @@ def addevent(groupIndex):
     form = MakeEventForm()
     if form.validate_on_submit():
         group = app_model.Group.query.filter_by(id=groupIndex).first()
-        event = app_model.Event(request.form["eventname"],request.form["location"])
+        event = app_model.Event(request.form["eventname"],form.method.data)
         event.group = group;
-        event.method = "roundrobin"
         # membership = app_model.Membership(current_user,group)
         # app_db.session.add(membership)
         app_db.session.add(event)

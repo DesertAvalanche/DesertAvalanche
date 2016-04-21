@@ -1,13 +1,30 @@
 {% extends "base.html" %}
 {% block content %}
+    {% if scores != {} %}
 <form action="{{event.apply_method_prefix("vote")}}" method="POST">
-    {{ form.csrf_token }}
-    <ul>
-    {% for item in form.choice %}
-    <li>{{item}} --  {{ item.label }}</li>
+    {{ optionform.csrf_token }}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Votes</th>
+                <th>Location</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for item in optionform.choice %}
+    <tr>
+        <td>{{ scores[item.label] }}</td>
+        <td>{{item}} {{ item.label }}</td>
+    </tr>
     {% endfor %}
-    {{ form.suggestion(placeholder="or type a new choice") }}
-    </ul>
+        </tbody>
+    </table>
+    <button type="submit">Submit choice</button>
+</form>
+    {% endif %}
+<form action="{{event.apply_method_prefix("add")}}" method="POST">
+    {{ suggestionform.csrf_token }}
+    {{ suggestionform.suggestion(placeholder="nominate a location") }}
     <button type="submit">Submit choice</button>
 </form>
 {% endblock %}

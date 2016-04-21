@@ -94,9 +94,9 @@ class Model():
             votes = db.relationship("Vote",back_populates="event")
             method = db.Column(db.String(120))
 
-            def __init__(self,name,location):
+            def __init__(self,name,method):
                 self.name = name
-                self.location = location
+                self.method = method
 
             def get_method(self):
                 module = __import__("voting.{}".format(self.method),globals(),locals(),["factory"],0)

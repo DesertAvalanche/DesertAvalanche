@@ -1,1 +1,17 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th>Votes</th>
+            <th>Location</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for x in scores %}
+            <tr>
+                <td>{{x[1]}}</td>
+                <td>{{x[0]}}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
 <a href="{{ event.apply_method_prefix("vote")}}" method="POST">VOTE NOW</a>
