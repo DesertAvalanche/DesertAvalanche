@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+<a href="/mygroups">home</a>
 <h1>{{ group.name }}</h1> 
     {% if current_user.get_membership(group).is_admin %}
         <span class="label label-primary">administrator</span>

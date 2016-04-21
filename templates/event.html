@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+<a href="/group/{{ event.group.id }}">back to group</a>
 <h1>Event Name: {{ event.name }}</h1>
 <div class="jumbotron">
     {{ event.get_method().get_billboard(current_user.get_membership(event.group)) | safe }}
