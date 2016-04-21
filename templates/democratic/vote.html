@@ -13,18 +13,18 @@
         <tbody>
     {% for item in optionform.choice %}
     <tr>
-        <td>{{ scores[item.label] }}</td>
+        <td>{{ scores[item.data] }}</td>
         <td>{{item}} {{ item.label }}</td>
     </tr>
     {% endfor %}
         </tbody>
     </table>
-    <button type="submit">Submit choice</button>
+    <button type="submit">Submit vote</button>
 </form>
     {% endif %}
 <form action="{{event.apply_method_prefix("add")}}" method="POST">
     {{ suggestionform.csrf_token }}
     {{ suggestionform.suggestion(placeholder="nominate a location") }}
-    <button type="submit">Submit choice</button>
+    <button type="submit">Nominate</button>
 </form>
 {% endblock %}
